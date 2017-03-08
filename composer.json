@@ -10,6 +10,9 @@
 			"homepage": "http://vasekpurchart.cz"
 		}
 	],
+	"require": {
+		"php": "~7.0"
+	},
 	"config": {
 		"bin-dir": "bin"
 	}
