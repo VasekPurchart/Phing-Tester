@@ -1,0 +1,13 @@
+{
+	"name": "vasek-purchart/phing-tester",
+	"description": "Helper tool for writing Phing component tests using PHPUnit",
+	"keywords": ["phing", "test", "phpunit"],
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Vašek Purchart",
+			"email": "me@vasekpurchart.cz",
+			"homepage": "http://vasekpurchart.cz"
+		}
+	]
+}
