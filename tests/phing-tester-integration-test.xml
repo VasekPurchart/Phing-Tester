@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="PhingTesterIntegrationTest" default="test">
+
+	<target name="testExecuteTarget">
+		<echo>OK</echo>
+	</target>
+
+	<target name="lorem-ipsum">
+		<echo>Lorem ipsum dolor sit amet</echo>
+	</target>
+
+	<target name="testMessageInLogsFromCustomTarget-foo">
+		<echo>FOO</echo>
+	</target>
+
+	<target name="testMessageInLogsFromCustomTarget-bar">
+		<echo>BAR</echo>
+	</target>
+
+	<target name="testMessageInLogsWithCustomPriority">
+		<echo level="debug">Lorem ipsum dolor sit amet</echo>
+	</target>
+
+	<target name="testFailBuild">
+		<fail/>
+	</target>
+
+	<target name="testFailBuildWithMessage">
+		<fail message="Fail message"/>
+	</target>
+
+	<target name="base-directory">
+		<echo>basedir: ${project.basedir}</echo>
+	</target>
+
+	<target name="testGetCustomProjectProperties">
+		<property name="foo" value="bar"/>
+	</target>
+
+</project>
