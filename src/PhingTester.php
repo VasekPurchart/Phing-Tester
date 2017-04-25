@@ -96,12 +96,15 @@ class PhingTester
 				Assert::assertTrue(true); // increase number of positive assertions
 			},
 			function () use ($messageErrorSnippet) {
+				// @codeCoverageIgnoreStart
+				// affects PHPUnit global state
 				Assert::fail(
 					sprintf('Message >>> %s <<< not found in logs:', $messageErrorSnippet)
 					. PHP_EOL
 					. PHP_EOL
 					. $this->formatLogsForOutput($this->phingTestListener->getLogs())
 				);
+				// @codeCoverageIgnoreEnd
 			}
 		);
 	}
@@ -146,6 +149,8 @@ class PhingTester
 			$targetName,
 			$priority,
 			function (BuildEvent $logBuildEvent) use ($messageErrorSnippet) {
+				// @codeCoverageIgnoreStart
+				// affects PHPUnit global state
 				Assert::fail(
 					sprintf(
 						'Message >>> %s <<< found in logs, but >>> %s <<< was not expected to be found. Complete logs:',
@@ -156,6 +161,7 @@ class PhingTester
 					. PHP_EOL
 					. $this->formatLogsForOutput($this->phingTestListener->getLogs())
 				);
+				// @codeCoverageIgnoreEnd
 			},
 			function () {
 				Assert::assertTrue(true); // increase number of positive assertions
