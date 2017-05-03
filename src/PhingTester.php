@@ -47,7 +47,7 @@ class PhingTester
 			$this->project->fireBuildStarted();
 			$this->project->executeTarget($targetName);
 			$this->project->fireBuildFinished(null);
-		} catch (\Exception $e) {
+		} catch (\Throwable $e) {
 			$this->project->fireBuildFinished($e);
 			throw $e;
 		}
