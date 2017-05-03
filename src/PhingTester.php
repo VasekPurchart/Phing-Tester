@@ -6,10 +6,8 @@ namespace VasekPurchart\Phing\PhingTester;
 
 use BuildEvent;
 use Closure;
-use PhingFile;
-
 use PHPUnit\Framework\Assert;
-
+use PhingFile;
 use Project;
 use ProjectConfigurator;
 
@@ -79,7 +77,7 @@ class PhingTester
 	 * @param \Closure $messageAssert callback(\BuildEvent)
 	 * @param string $messageErrorSnippet
 	 * @param string|null $targetName
-	 * @param integer $priority
+	 * @param int $priority
 	 */
 	private function assertInLogs(
 		Closure $messageAssert,
@@ -135,7 +133,7 @@ class PhingTester
 	 * @param \Closure $messageAssert callback(\BuildEvent)
 	 * @param string $messageErrorSnippet
 	 * @param string|null $targetName
-	 * @param integer $priority
+	 * @param int $priority
 	 */
 	private function assertNotInLogs(
 		Closure $messageAssert,
@@ -172,7 +170,7 @@ class PhingTester
 	/**
 	 * @param \Closure $messageAssert callback(\BuildEvent)
 	 * @param string|null $targetName
-	 * @param integer $priority
+	 * @param int $priority
 	 * @param \Closure $foundCallback callback(\BuildEvent)
 	 * @param \Closure $notFoundCallback
 	 */
