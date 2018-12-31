@@ -20,7 +20,7 @@ class PhingTester
 	/** @var \VasekPurchart\Phing\PhingTester\PhingTestListener */
 	private $phingTestListener;
 
-	public function __construct(string $buildFilePath, string $baseDirectoryPath = null)
+	public function __construct(string $buildFilePath, ?string $baseDirectoryPath = null)
 	{
 		$this->project = new Project();
 		$this->project->init();
@@ -39,7 +39,7 @@ class PhingTester
 		ProjectConfigurator::configureProject($this->project, new PhingFile($buildFilePath));
 	}
 
-	public function executeTarget(string $targetName)
+	public function executeTarget(string $targetName): void
 	{
 		try {
 			$this->project->fireBuildStarted();
@@ -53,20 +53,20 @@ class PhingTester
 
 	public function assertLogMessage(
 		string $message,
-		string $targetName = null,
+		?string $targetName = null,
 		int $priority = Project::MSG_INFO
-	)
+	): void
 	{
-		$this->assertInLogs(function (BuildEvent $logBuildEvent) use ($message) {
+		$this->assertInLogs(function (BuildEvent $logBuildEvent) use ($message): bool {
 			return strpos($logBuildEvent->getMessage(), $message) !== false;
 		}, $message, $targetName, $priority);
 	}
 
 	public function assertLogMessageRegExp(
 		string $messagePattern,
-		string $targetName = null,
+		?string $targetName = null,
 		int $priority = Project::MSG_INFO
-	)
+	): void
 	{
 		$this->assertInLogs(function (BuildEvent $logBuildEvent) use ($messagePattern) {
 			return preg_match($messagePattern, $logBuildEvent->getMessage());
@@ -82,18 +82,18 @@ class PhingTester
 	private function assertInLogs(
 		Closure $messageAssert,
 		string $messageErrorSnippet,
-		$targetName,
+		?string $targetName,
 		int $priority
-	)
+	): void
 	{
 		$this->findInLogs(
 			$messageAssert,
 			$targetName,
 			$priority,
-			function () {
+			function (): void {
 				Assert::assertTrue(true); // increase number of positive assertions
 			},
-			function () use ($messageErrorSnippet) {
+			function () use ($messageErrorSnippet): void {
 				// @codeCoverageIgnoreStart
 				// affects PHPUnit global state
 				Assert::fail(
@@ -109,20 +109,20 @@ class PhingTester
 
 	public function assertNotLogMessage(
 		string $message,
-		string $targetName = null,
+		?string $targetName = null,
 		int $priority = Project::MSG_DEBUG
-	)
+	): void
 	{
-		$this->assertNotInLogs(function (BuildEvent $logBuildEvent) use ($message) {
+		$this->assertNotInLogs(function (BuildEvent $logBuildEvent) use ($message): bool {
 			return strpos($logBuildEvent->getMessage(), $message) !== false;
 		}, $message, $targetName, $priority);
 	}
 
 	public function assertNotLogMessageRegExp(
 		string $messagePattern,
-		string $targetName = null,
+		?string $targetName = null,
 		int $priority = Project::MSG_DEBUG
-	)
+	): void
 	{
 		$this->assertNotInLogs(function (BuildEvent $logBuildEvent) use ($messagePattern) {
 			return preg_match($messagePattern, $logBuildEvent->getMessage());
@@ -138,15 +138,15 @@ class PhingTester
 	private function assertNotInLogs(
 		Closure $messageAssert,
 		string $messageErrorSnippet,
-		$targetName,
+		?string $targetName,
 		int $priority
-	)
+	): void
 	{
 		$this->findInLogs(
 			$messageAssert,
 			$targetName,
 			$priority,
-			function (BuildEvent $logBuildEvent) use ($messageErrorSnippet) {
+			function (BuildEvent $logBuildEvent) use ($messageErrorSnippet): void {
 				// @codeCoverageIgnoreStart
 				// affects PHPUnit global state
 				Assert::fail(
@@ -161,7 +161,7 @@ class PhingTester
 				);
 				// @codeCoverageIgnoreEnd
 			},
-			function () {
+			function (): void {
 				Assert::assertTrue(true); // increase number of positive assertions
 			}
 		);
@@ -176,11 +176,11 @@ class PhingTester
 	 */
 	private function findInLogs(
 		Closure $messageAssert,
-		$targetName,
+		?string $targetName,
 		int $priority,
 		Closure $foundCallback,
 		Closure $notFoundCallback
-	)
+	): void
 	{
 		foreach ($this->phingTestListener->getLogs() as $logBuildEvent) {
 			if (
@@ -207,7 +207,7 @@ class PhingTester
 	 */
 	private function formatLogsForOutput(array $logBuildEvents): string
 	{
-		return implode(PHP_EOL, array_map(function (BuildEvent $logBuildEvent) {
+		return implode(PHP_EOL, array_map(function (BuildEvent $logBuildEvent): string {
 			return ($logBuildEvent->getTask() !== null
 				? sprintf('[%s] ', $logBuildEvent->getTask()->getTaskName())
 				: '')
@@ -219,7 +219,7 @@ class PhingTester
 	 * @param string $targetName
 	 * @param \Closure|null $checksCallback callback(\BuildException)
 	 */
-	public function expectFailedBuild(string $targetName, Closure $checksCallback = null)
+	public function expectFailedBuild(string $targetName, ?Closure $checksCallback = null): void
 	{
 		try {
 			$this->executeTarget($targetName);

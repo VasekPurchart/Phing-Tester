@@ -10,18 +10,18 @@ use Project;
 class PhingTestListener implements \BuildListener
 {
 
-	const MESSAGE_BUILD_FAILED = 'BUILD FAILED';
-	const MESSAGE_BUILD_SUCCESSFUL = 'BUILD FINISHED';
+	private const MESSAGE_BUILD_FAILED = 'BUILD FAILED';
+	private const MESSAGE_BUILD_SUCCESSFUL = 'BUILD FINISHED';
 
 	/** @var \BuildEvent[] */
 	private $logs;
 
-	public function buildStarted(BuildEvent $event)
+	public function buildStarted(BuildEvent $event): void
 	{
 		// empty
 	}
 
-	public function buildFinished(BuildEvent $event)
+	public function buildFinished(BuildEvent $event): void
 	{
 		$buildSuccessful = $event->getException() === null;
 		$message = $buildSuccessful
@@ -36,27 +36,27 @@ class PhingTestListener implements \BuildListener
 		$this->messageLogged($event);
 	}
 
-	public function targetStarted(BuildEvent $event)
+	public function targetStarted(BuildEvent $event): void
 	{
 		// empty
 	}
 
-	public function targetFinished(BuildEvent $event)
+	public function targetFinished(BuildEvent $event): void
 	{
 		// empty
 	}
 
-	public function taskStarted(BuildEvent $event)
+	public function taskStarted(BuildEvent $event): void
 	{
 		// empty
 	}
 
-	public function taskFinished(BuildEvent $event)
+	public function taskFinished(BuildEvent $event): void
 	{
 		// empty
 	}
 
-	public function messageLogged(BuildEvent $event)
+	public function messageLogged(BuildEvent $event): void
 	{
 		$this->logs[] = $event;
 	}
