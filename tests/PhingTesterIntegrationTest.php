@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace VasekPurchart\Phing\PhingTester;
 
+use PHPUnit\Framework\Assert;
 use Project;
 
 class PhingTesterIntegrationTest extends \PHPUnit\Framework\TestCase
@@ -101,7 +102,7 @@ class PhingTesterIntegrationTest extends \PHPUnit\Framework\TestCase
 		$tester = new PhingTester(__DIR__ . '/phing-tester-integration-test.xml');
 		$target = __FUNCTION__;
 		$tester->expectFailedBuild($target, function (\BuildException $e) use ($target): void {
-			$this->assertRegExp(sprintf('~%s.+not.+exist~', $target), $e->getMessage());
+			Assert::assertRegExp(sprintf('~%s.+not.+exist~', $target), $e->getMessage());
 		});
 	}
 
@@ -127,7 +128,7 @@ class PhingTesterIntegrationTest extends \PHPUnit\Framework\TestCase
 		$target = __FUNCTION__;
 		$tester->executeTarget($target);
 
-		$this->assertSame('bar', $tester->getProject()->getProperty('foo'));
+		Assert::assertSame('bar', $tester->getProject()->getProperty('foo'));
 	}
 
 }
