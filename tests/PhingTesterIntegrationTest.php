@@ -13,9 +13,9 @@ class PhingTesterIntegrationTest extends \PHPUnit\Framework\TestCase
 	{
 		$tester = new PhingTester(__DIR__ . '/phing-tester-integration-test.xml');
 		$target = __FUNCTION__;
-		$tester->executeTarget($target);
 
-		$this->assertTrue(true); // build should not fail and reach this
+		$this->expectNotToPerformAssertions();
+		$tester->executeTarget($target);
 	}
 
 	public function testMessageInLogs(): void
