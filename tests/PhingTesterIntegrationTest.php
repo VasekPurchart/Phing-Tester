@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace VasekPurchart\Phing\PhingTester;
 
+use Generator;
+use PHPUnit\Framework\Assert;
 use Project;
 
 class PhingTesterIntegrationTest extends \PHPUnit\Framework\TestCase
@@ -13,9 +15,9 @@ class PhingTesterIntegrationTest extends \PHPUnit\Framework\TestCase
 	{
 		$tester = new PhingTester(__DIR__ . '/phing-tester-integration-test.xml');
 		$target = __FUNCTION__;
-		$tester->executeTarget($target);
 
-		$this->assertTrue(true); // build should not fail and reach this
+		$this->expectNotToPerformAssertions();
+		$tester->executeTarget($target);
 	}
 
 	public function testMessageInLogs(): void
@@ -101,24 +103,48 @@ class PhingTesterIntegrationTest extends \PHPUnit\Framework\TestCase
 		$tester = new PhingTester(__DIR__ . '/phing-tester-integration-test.xml');
 		$target = __FUNCTION__;
 		$tester->expectFailedBuild($target, function (\BuildException $e) use ($target): void {
-			$this->assertRegExp(sprintf('~%s.+not.+exist~', $target), $e->getMessage());
+			Assert::assertRegExp(sprintf('~%s.+not.+exist~', $target), $e->getMessage());
 		});
 	}
 
-	public function testDefaultBaseDirectoryMatchesBuildfile(): void
+	/**
+	 * @return mixed[][]|\Generator
+	 */
+	public function baseDirectoryDataProvider(): Generator
 	{
-		$tester = new PhingTester(__DIR__ . '/phing-tester-integration-test.xml');
-		$tester->executeTarget('base-directory');
-		$tester->assertLogMessageRegExp(sprintf('~^basedir: %s$~', __DIR__));
+		yield 'default base directory matches buildfile' => [
+			'buildFilePath' => __DIR__ . '/phing-tester-integration-test.xml',
+			'baseDirectoryPath' => null,
+			'expectedLogMessageRegExp' => sprintf('~^basedir: %s$~', __DIR__),
+		];
+
+		yield 'custom base directory' => (static function (): array {
+			$customBaseDir = realpath(__DIR__ . '/..');
+
+			return [
+				'buildFilePath' => __DIR__ . '/phing-tester-integration-test.xml',
+				'baseDirectoryPath' => $customBaseDir,
+				'expectedLogMessageRegExp' => sprintf('~^basedir: %s$~', $customBaseDir),
+			];
+		})();
 	}
 
-	public function testSetCustomBaseDirectory(): void
+	/**
+	 * @dataProvider baseDirectoryDataProvider
+	 *
+	 * @param string $buildFilePath
+	 * @param string|null $baseDirectoryPath
+	 * @param string $expectedLogMessageRegExp
+	 */
+	public function testBaseDirectory(
+		string $buildFilePath,
+		?string $baseDirectoryPath,
+		string $expectedLogMessageRegExp
+	): void
 	{
-		$customBaseDir = realpath(__DIR__ . '/..');
-
-		$tester = new PhingTester(__DIR__ . '/phing-tester-integration-test.xml', $customBaseDir);
+		$tester = new PhingTester($buildFilePath, $baseDirectoryPath);
 		$tester->executeTarget('base-directory');
-		$tester->assertLogMessageRegExp(sprintf('~^basedir: %s$~', $customBaseDir));
+		$tester->assertLogMessageRegExp($expectedLogMessageRegExp);
 	}
 
 	public function testGetCustomProjectProperties(): void
@@ -127,7 +153,7 @@ class PhingTesterIntegrationTest extends \PHPUnit\Framework\TestCase
 		$target = __FUNCTION__;
 		$tester->executeTarget($target);
 
-		$this->assertSame('bar', $tester->getProject()->getProperty('foo'));
+		Assert::assertSame('bar', $tester->getProject()->getProperty('foo'));
 	}
 
 }
